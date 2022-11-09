@@ -40,6 +40,8 @@
     <string name="currency_try_name">Turkish lira</string>
     <string name="currency_usd_name">United States dollar</string>
     <string name="currency_zar_name">South African rand</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

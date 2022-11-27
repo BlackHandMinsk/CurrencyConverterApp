@@ -18,7 +18,7 @@ sealed class ErrorRecord {
     }
     object GenericError: ErrorRecord() {
         override fun toString(): String {
-            return "There was some error"
+            return "Error"
         }
     }
 }

@@ -34,7 +34,7 @@ class ListOfCurrenciesViewModel @Inject constructor(
             is Record.Success -> Record.Success(
                 sCurrency?.let { sC ->
                     val actualList = response.data
-                        .filter { it.img != 0 } // filtering currencies without image
+                        .filter { it.img != 0 }
                         .map { cr ->
                             cr.apply {
                                 this.value *= num
@@ -47,7 +47,7 @@ class ListOfCurrenciesViewModel @Inject constructor(
                         this.isSelected = true
                     })
                     actualList.toList()
-                } ?: response.data.filter { it.img != 0 } // filtering currencies without image
+                } ?: response.data.filter { it.img != 0 }
             )
             else -> response
         }

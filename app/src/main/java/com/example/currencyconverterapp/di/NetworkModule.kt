@@ -42,9 +42,11 @@ object NetworkModule {
                     .build()
                 val response = chain.proceed(newRequest)
 
-                if (response.code in HttpURLConnection.HTTP_BAD_REQUEST..499) {
+                if (response.code >= HttpURLConnection.HTTP_BAD_REQUEST && response.code <= 499) {
                     throw CurrencyRemoteException.ClientError(response.message)
-                } else if (response.code in HttpURLConnection.HTTP_INTERNAL_ERROR..599) {
+                } else if (
+                    response.code >= HttpURLConnection.HTTP_INTERNAL_ERROR && response.code <= 599
+                ) {
                     throw CurrencyRemoteException.ServerError(response.message)
                 }
                 response

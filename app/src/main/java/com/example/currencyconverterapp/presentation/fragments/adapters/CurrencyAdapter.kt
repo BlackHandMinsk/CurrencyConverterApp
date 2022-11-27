@@ -108,7 +108,7 @@ class CurrencyAdapter @Inject constructor(
                     } else {
                         etCurrencyValue.isEnabled = false
                         etCurrencyValue.isCursorVisible = false
-                        etCurrencyValue.setBackgroundColor(/* color = */ Color.TRANSPARENT)
+                        etCurrencyValue.setTextColor(Color.BLACK)
                     }
                 }
             }

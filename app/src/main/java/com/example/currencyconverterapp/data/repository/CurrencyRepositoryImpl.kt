@@ -3,6 +3,7 @@ package com.example.currencyconverterapp.data.repository
 import com.example.currencyconverterapp.data.CurrencyApiService
 import com.example.currencyconverterapp.data.mappers.ErrorMapper
 import com.example.currencyconverterapp.data.mappers.MapCurrency
+import com.example.currencyconverterapp.data.preferences.PreferenceManager
 import com.example.currencyconverterapp.data.util.CurrencyRemoteException
 import com.example.currencyconverterapp.data.util.ResourceManager
 import com.example.currencyconverterapp.domain.model.Currency
@@ -15,8 +16,8 @@ class CurrencyRepositoryImpl(
     private val api: CurrencyApiService,
     private val mapError: ErrorMapper,
     private val resourceManager: ResourceManager,
-    private val mapCurrency: MapCurrency
-
+    private val mapCurrency: MapCurrency,
+    private val preferenceManager: PreferenceManager
 ) : CurrencyRepository {
     override suspend fun getAllCurrencyFromApi(): Flow<Record<List<Currency>>> = flow {
         emit(Record.Loading)
@@ -37,5 +38,13 @@ class CurrencyRepositoryImpl(
         } catch (e: CurrencyRemoteException) {
             emit(mapError.mapErrorRecord(e))
         }
+    }
+
+    override fun getNumber(): Flow<Double> {
+        return preferenceManager.getNumber
+    }
+
+    override suspend fun setNumber(number: Double) {
+        preferenceManager.setNumber(number)
     }
 }

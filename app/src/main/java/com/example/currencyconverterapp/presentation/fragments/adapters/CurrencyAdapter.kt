@@ -1,6 +1,8 @@
 package com.example.currencyconverterapp.presentation.fragments.adapters
 
+import android.graphics.Color
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +13,18 @@ import com.bumptech.glide.RequestManager
 import com.example.currencyconverterapp.R
 import com.example.currencyconverterapp.databinding.RvCurrencyItemBinding
 import com.example.currencyconverterapp.domain.model.Currency
+import com.example.currencyconverterapp.domain.useCases.SetNumberIntoPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CurrencyAdapter @Inject constructor(
-    private val glide: RequestManager
+    private var glide: RequestManager,
+    private var setNumber: SetNumberIntoPreferences,
 ) : ListAdapter<Currency, CurrencyAdapter.CurrencyViewHolder>(CurrencyDiffCallback),
     View.OnClickListener {
     private var listener: AdaptersListener? = null
-    private var mRate: Double = 1.0
 
     fun setOnClickListener(onClickListener: AdaptersListener) {
         this.listener = onClickListener
@@ -26,7 +32,11 @@ class CurrencyAdapter @Inject constructor(
 
     override fun onClick(v: View) {
         val currency = v.tag as Currency
-//        val num = v.tag as Double
+
+        CoroutineScope(Dispatchers.IO).launch {
+            setNumber.invoke(1.0)
+        }
+
         listener?.onClickItem(currency)
     }
 
@@ -58,7 +68,6 @@ class CurrencyAdapter @Inject constructor(
         private val binding: RvCurrencyItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(currency: Currency?) {
-
             val image = currency?.img
 
             glide.load(image)
@@ -71,14 +80,39 @@ class CurrencyAdapter @Inject constructor(
 
                 currency?.let { info ->
                     tvCurrencyShortName.text = info.base
-                    tvCurrencyShortName.text = info.name
+                    tvCurrencyName.text = info.name
                     etCurrencyValue.setText(String.format("%.5f", (info.value)))
-                    if (info.isSelected){
-                        val qwert = etCurrencyValue.text.toString()
-                        Log.w("LOG", qwert)
+                    if (info.isSelected) {
+                        etCurrencyValue.setSelectAllOnFocus(true)
+                        etCurrencyValue.isEnabled = true
+                        etCurrencyValue.isCursorVisible = true
+
+                        etCurrencyValue.setOnKeyListener(object : View.OnKeyListener {
+                            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                                if (
+                                    event.action == KeyEvent.ACTION_DOWN &&
+                                    keyCode == KeyEvent.KEYCODE_ENTER
+                                ) {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        setNumber.invoke(etCurrencyValue.text.toString().toDouble())
+                                    }
+
+                                    etCurrencyValue.clearFocus()
+                                    etCurrencyValue.isCursorVisible = false
+
+                                    return true
+                                }
+                                return false
+                            }
+                        })
+                    } else {
+                        etCurrencyValue.isEnabled = false
+                        etCurrencyValue.isCursorVisible = false
+                        etCurrencyValue.setBackgroundColor(/* color = */ Color.TRANSPARENT)
                     }
                 }
             }
         }
+
     }
 }

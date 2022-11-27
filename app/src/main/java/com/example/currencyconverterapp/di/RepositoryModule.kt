@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.currencyconverterapp.data.CurrencyApiService
 import com.example.currencyconverterapp.data.mappers.ErrorMapper
 import com.example.currencyconverterapp.data.mappers.MapCurrency
+import com.example.currencyconverterapp.data.preferences.PreferenceManager
 import com.example.currencyconverterapp.data.repository.CurrencyRepositoryImpl
 import com.example.currencyconverterapp.data.util.ResourceManager
 import com.example.currencyconverterapp.domain.repository.CurrencyRepository
@@ -32,13 +33,15 @@ object RepositoryModule {
         api: CurrencyApiService,
         mapError: ErrorMapper,
         resourceManager: ResourceManager,
-        mapCurrency: MapCurrency
+        mapCurrency: MapCurrency,
+        preferenceManager: PreferenceManager
     ): CurrencyRepository {
         return CurrencyRepositoryImpl(
             api = api,
             mapError = mapError,
             resourceManager = resourceManager,
-            mapCurrency = mapCurrency
+            mapCurrency = mapCurrency,
+            preferenceManager = preferenceManager
         )
     }
 }

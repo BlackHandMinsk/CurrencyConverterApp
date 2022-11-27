@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CurrencyRepository {
     suspend fun getAllCurrencyFromApi(): Flow<Record<List<Currency>>>
+    fun getNumber(): Flow<Double>
+    suspend fun setNumber(number: Double)
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyconverterapp.domain.model.Currency
 import com.example.currencyconverterapp.domain.useCases.GetCurrencyFromApiUseCase
+import com.example.currencyconverterapp.domain.useCases.GetNumberFromPreferences
 import com.example.currencyconverterapp.domain.util.Record
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -16,10 +17,12 @@ private const val TIME_UPDATES = 5000L
 
 @HiltViewModel
 class ListOfCurrenciesViewModel @Inject constructor(
-    private val getCurrency: GetCurrencyFromApiUseCase
+    private val getCurrency: GetCurrencyFromApiUseCase,
+    private val getNumber: GetNumberFromPreferences
 ) : ViewModel() {
 
     private var updateJob: Job? = null
+    private var getNumberJob: Job? = null
 
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
 
@@ -52,6 +55,13 @@ class ListOfCurrenciesViewModel @Inject constructor(
 
     init {
         getCurrency()
+        getNumber()
+    }
+
+    private fun getNumber() {
+        getNumberJob?.cancel()
+        getNumberJob =
+            viewModelScope.launch { getNumber.invoke().collect { number.tryEmit(it) } }
     }
 
     private fun getCurrency() {
@@ -70,9 +80,5 @@ class ListOfCurrenciesViewModel @Inject constructor(
 
     fun setCounter(currency: Currency) {
         selectedCurrency.tryEmit(currency)
-    }
-
-    fun setNumber(num: Double) {
-        number.tryEmit(num)
     }
 }

@@ -87,8 +87,4 @@ class ListOfCurrenciesFragment : Fragment(), AdaptersListener {
         adapter.notifyDataSetChanged()
         scrollToTop()
     }
-
-    override fun onSetNumber(number: Double) {
-        TODO("#1: added number")
-    }
 }
